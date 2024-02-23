@@ -1,0 +1,3 @@
+whatsapp-python
+python-telegram-bot
+numpy==1.26.2
