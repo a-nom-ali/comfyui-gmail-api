@@ -1,17 +1,10 @@
 ## 🎯 Contribution: ComfyUI Mimic Node Suit
 
-🔑 **Priority**:
-Gold
-
-👥 **Department**:
-Consulting Services
-
 👫 **Who is this for?**:
 Customer-facing departments
 
 🛠️ **What will we do?**:
-Develop a system that enables automated natural conversational email
-processes through AI Agents
+Develop a system that enables automated natural conversational processes through AI Agents
 
 💡 **Why are we doing this?**:
 To remove tedious tasks, save time and money, improve quality of
@@ -31,3 +24,4 @@ finalized by the team once all priority nodes are defined
 
 👨‍💻 **Crew**:
 - [😋🥊 a-nom-ali](https://github.com/a-nom-ali)
+- Calling all players...
