@@ -1,0 +1,2486 @@
+openapi: 3.0.1
+info:
+  title: One API
+  description: "One API allows you to communicate with your mobile customers on multiple\
+    \ communication channels with a single integration. Using the One API, you will\
+    \ be able to send and receive messages on both WhatsApp and SMS without the overhead\
+    \ of programming individual channels."
+  version: 1.0.0
+servers:
+- url: https://platform.clickatell.com
+tags:
+- name: One API
+- name: One API Client Callbacks
+  description: |-
+    <b>Forward Compatibility</b><br>While the basic callback structure will remain constant:<br><pre>
+    {
+      "integrationId": "string",
+      "integrationName": "string",
+      "event": {}
+    }</pre>There are constant additions to channels including new features and message types, and Clickatell will be adding these to the callbacks as they become available. <br><br>Customers are required to implement callback processing in such a way that new event types as well as additional parameters in an event type do not break callback processing in the customer system.<ul><li>Any HTTP 200 range status code response from client is considered an acknowledgement that the callback was successful. Anything else will be retried, excluding redirect status code.</li><li>Callback payloads and configurations are different (not backwards compatible).</li><li>In future, one HTTPS callback request may contain multiple events for efficiency, but for now batch sizes are always 1.</li><li>The events in callbacks may be out of sequence. User should look at timestamp fields to determine order.</li><li>Timestamps are millisecond unit timestamps.</li><li>If the customer application does not respond fast enough to HTTP/S callbacks, we will retry the callback. This means they may experience duplicate callbacks (due to the retries).</li><li>Customer can configure a callback URL for status event callbacks and another URL for MO messages. This helps to maintain low latency conversations by splitting the events.</li></ul>
+paths:
+  /client-callback/one-api-reply:
+    post:
+      tags:
+      - One API Client Callbacks
+      summary: Example of a customer's One Api reply callback
+      operationId: sendPostOmniReplyCallback
+      parameters: []
+      requestBody:
+        description: Reply request to client
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OmniReplyCallbackRequest'
+            examples:
+              Example 1:
+                summary: One Api replies
+                description: Example 1
+                value:
+                  integrationId: fa8090815f05d5ed015f0b5b56080cd2
+                  integrationName: My integration
+                  event:
+                    moText:
+                    - channel: 'whatsapp/sms '
+                      messageId: 3a89680503414383af44dcd0e4e5f184
+                      relatedMessageId: d33eef0838a121f71069a4cc8d55c19e
+                      relatedClientMessageId: d33eef0838a121f71069a4cc8d55c19e
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1506607698000
+                      content: Text Content of the reply message
+                      charset: UTF-8
+                      sms:
+                        network: Network ID
+                      whatsapp:
+                        profileName: Profile Name
+                    moMedia:
+                    - channel: 'whatsapp '
+                      messageId: 7ed16cedd7ca7c4d252c7ec854dec3cb
+                      relatedMessageId: 8f287d93f5e5c5fd3ba228fef124c975
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1506607698000
+                      contentType: image/jpeg
+                      content: Base64 Binary Media Stream Content
+                      caption: caption text here
+                      whatsapp:
+                        profileName: Profile Name
+                    - channel: 'whatsapp '
+                      messageId: 7ed16cedd7ca7c4d252c7ec854dec3cb
+                      relatedMessageId: 8f287d93f5e5c5fd3ba228fef124c975
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1506607698000
+                      files:
+                      - contentType: image/jpeg
+                        downloadUrl: https://platform.clickatell.com/v1/media?fileId=UUID-1.xxx&sha256Hash=529fd5482f43db39992a894bbe4216f51a4d724131a97b93cc5589433b545820&source=client
+                        sha256Hash: 529fd5482f43db39992a894bbe4216f51a4d724131a97b93cc5589433b545820
+                        byteSize: 12345
+                        fileName: myImage.jpeg
+                      caption: caption text here
+                      whatsapp:
+                        profileName: Profile Name
+                    moLocation:
+                    - channel: 'whatsapp '
+                      messageId: f4915e8edf965566246c995c8703120d
+                      relatedMessageId: null
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1506607698000
+                      charset: Character set of the reply message
+                      locationAddress: "900 Island Dr #202, Redwood City, Redwood\
+                        \ City, CA, 94065"
+                      locationName: Clickatell
+                      latitute: "37.536033630371094"
+                      longitude: "-122.25885772705078"
+                      whatsapp:
+                        profileName: Profile Name
+                    moContacts:
+                    - channel: whatsapp
+                      messageId: f4915e8edf965566246c995c8703120d
+                      relatedMessageId: null
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1506607698000
+                      whatsapp:
+                        profileName: Profile Name
+                      contacts:
+                      - addresses:
+                        - city: Johannesburg
+                          country: SA
+                          countryCode: "10"
+                          state: state
+                          street: street
+                          type: personal
+                          zip: "1010"
+                        birthday: 01.01.1980
+                        emails:
+                        - email: test@test.com
+                          type: personal
+                        name:
+                          firstName: First Name
+                          formattedName: Formatted Name
+                          lastName: Last Name
+                        org:
+                          company: Clickatell
+                        phones:
+                        - phone: "2799900001"
+                          type: personal
+                        - phone: "2799900002"
+                          type: personal
+                          waId: waId
+                        urls:
+                        - url: https://clickatelllabs.com
+                          type: personal
+                      charset: Character set of the reply message
+                    moSuggestedResponse:
+                    - channel: whatsapp
+                      messageId: 3a89680503414383af44dcd0e4e5f184
+                      relatedMessageId: d33eef0838a121f71069a4cc8d55c19e
+                      relatedClientMessageId: d33eef0838a121f71069a4cc8d55c19e
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1506607698000
+                      content: Text Content of the reply message
+                      postbackData: Custom Data As Defined In Outbound Message
+                      charset: UTF-8
+                      whatsapp:
+                        profileName: Profile Name
+                    moListPickerResponse:
+                    - channel: whatsapp
+                      messageId: 7ed16cedd7ca7c4d252c7ec854dec3cb
+                      relatedMessageId: null
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1506607698000
+                      postbackData: null
+                      selectedItems:
+                      - postbackData: food option 1
+                      whatsapp:
+                        profileName: WA Client Profile Name
+                    moButtonResponse:
+                    - channel: whatsapp
+                      messageId: 7ed16cedd7ca7c4d252c7ec854dec3cb
+                      relatedMessageId: 27366213db12571cf7f433184ffa46ea
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1506607698000
+                      postbackData: null
+                      selectedItem:
+                        postbackData: postback-id-2
+                        content: This field might be set to null on some channels
+                      whatsapp:
+                        profileName: WA Client Profile Name
+              Example 2:
+                summary: One Api replies with referral info
+                description: Example 2
+                value:
+                  integrationId: fa8090815f05d5ed015f0b5b56080cd2
+                  integrationName: My integration
+                  event:
+                    moText:
+                    - channel: 'whatsapp/sms '
+                      messageId: 3a89680503414383af44dcd0e4e5f184
+                      relatedMessageId: d33eef0838a121f71069a4cc8d55c19e
+                      relatedClientMessageId: d33eef0838a121f71069a4cc8d55c19e
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1666607698000
+                      content: Text Content of the reply message
+                      charset: UTF-8
+                      sms:
+                        network: Network ID
+                      whatsapp:
+                        profileName: Profile Name
+                        referralInfo:
+                          headline: Headline used in the ad
+                          body: Body data
+                          sourceType: ad
+                          sourceId: Facebook ID
+                          sourceUrl: https://www.facebook.com/ad
+                    moMedia:
+                    - channel: 'whatsapp '
+                      messageId: 7ed16cedd7ca7c4d252c7ec854dec3cb
+                      relatedMessageId: 8f287d93f5e5c5fd3ba228fef124c975
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1666607698000
+                      contentType: image/jpeg
+                      content: Base64 Binary Media Stream Content
+                      caption: caption text here
+                      whatsapp:
+                        profileName: Profile Name
+                        referralInfo:
+                          headline: Headline used in the ad
+                          body: Body data
+                          sourceType: ad
+                          sourceId: Facebook ID
+                          sourceUrl: https://www.facebook.com/ad
+                    - channel: 'whatsapp '
+                      messageId: 7ed16cedd7ca7c4d252c7ec854dec3cb
+                      relatedMessageId: 8f287d93f5e5c5fd3ba228fef124c975
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1666607698000
+                      files:
+                      - contentType: image/jpeg
+                        downloadUrl: https://platform.clickatell.com/v1/media?fileId=UUID-1.xxx&sha256Hash=529fd5482f43db39992a894bbe4216f51a4d724131a97b93cc5589433b545820&source=client
+                        sha256Hash: 529fd5482f43db39992a894bbe4216f51a4d724131a97b93cc5589433b545820
+                        byteSize: 12345
+                        fileName: myImage.jpeg
+                      caption: caption text here
+                      whatsapp:
+                        profileName: Profile Name
+                        referralInfo:
+                          headline: Headline used in the ad
+                          body: Body data
+                          sourceType: ad
+                          sourceId: Facebook ID
+                          sourceUrl: https://www.facebook.com/ad
+                    moLocation:
+                    - channel: 'whatsapp '
+                      messageId: f4915e8edf965566246c995c8703120d
+                      relatedMessageId: null
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1666607698000
+                      charset: Character set of the reply message
+                      locationAddress: "900 Island Dr #202, Redwood City, Redwood\
+                        \ City, CA, 94065"
+                      locationName: Clickatell
+                      latitute: "37.536033630371094"
+                      longitude: "-122.25885772705078"
+                      whatsapp:
+                        profileName: Profile Name
+                        referralInfo:
+                          headline: Headline used in the ad
+                          body: Body data
+                          sourceType: ad
+                          sourceId: Facebook ID
+                          sourceUrl: https://www.facebook.com/ad
+                    moContacts:
+                    - channel: whatsapp
+                      messageId: f4915e8edf965566246c995c8703120d
+                      relatedMessageId: null
+                      relatedClientMessageId: null
+                      from: "2799900001"
+                      to: "2799900002"
+                      timestamp: 1666607698000
+                      whatsapp:
+                        profileName: Profile Name
+                        referralInfo:
+                          headline: Headline used in the ad
+                          body: Body data
+                          sourceType: ad
+                          sourceId: Facebook ID
+                          sourceUrl: https://www.facebook.com/ad
+                      contacts:
+                      - addresses:
+                        - city: Johannesburg
+                          country: SA
+                          countryCode: "10"
+                          state: state
+                          street: street
+                          type: personal
+                          zip: "1010"
+                        birthday: 01.01.1980
+                        emails:
+                        - email: test@test.com
+                          type: personal
+                        name:
+                          firstName: First Name
+                          formattedName: Formatted Name
+                          lastName: Last Name
+                        org:
+                          company: Clickatell
+                        phones:
+                        - phone: "2799900001"
+                          type: personal
+                        - phone: "2799900002"
+                          type: personal
+                          waId: waId
+                        urls:
+                        - url: https://clickatelllabs.com
+                          type: personal
+                      charset: Character set of the reply message
+      responses:
+        "200":
+          description: Success
+      servers:
+      - url: http://customer-server/
+        description: Customer server
+        variables: {}
+  /client-callback/one-api-status:
+    post:
+      tags:
+      - One API Client Callbacks
+      summary: Example of a customer's One Api status callback
+      operationId: sendPostOmniStatusCallback
+      parameters: []
+      requestBody:
+        description: Status request to client
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OmniStatusCallbackRequest'
+            example:
+              integrationId: fa8090815f05d5ed015f0b5b56080cd2
+              integrationName: My integration
+              event:
+                messageStatusUpdate:
+                - channel: 'whatsapp/sms '
+                  timestamp: 1506607698860
+                  statusCode: 4
+                  status: DEVICE_ACK
+                  messageId: 3a89680503414383af44dcd0e4e5f184
+                  clientMessageId: 2993b6b548000a80989a20549e7558a5
+      responses:
+        "200":
+          description: Success
+      servers:
+      - url: http://customer-server/
+        description: Customer server
+        variables: {}
+  /v1/message/{omniMessageId}:
+    get:
+      tags:
+      - One API
+      summary: Query status of a message
+      description: "<ul><li>Response will contain status information for any channel\
+        \ relevant to the message.</li><li>The timestamp field indicates the time\
+        \ of the last status change.</li><li>If the message is in an unknown state\
+        \ (message not found), the format is different (since there is no channel)\
+        \ and the timestamp should be set to the current time as it is presently unknown\
+        \ at the time of the request.</li></ul>"
+      operationId: messageStatus
+      parameters:
+      - name: omniMessageId
+        in: path
+        description: Omni message id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmniMessageStatusResponse'
+              examples:
+                Example 1:
+                  summary: Single channel
+                  description: Example 1
+                  value:
+                    sms:
+                      status: QUEUED
+                      timestamp: 1506607698000
+        "404":
+          description: Account not found
+      security:
+      - api-key: []
+  /v1/message:
+    post:
+      tags:
+      - One API
+      summary: Send one or more messages
+      description: "Note that on message send responses, there are two possible locations\
+        \ for error information: one for global level (where entire payload is rejected)\
+        \ and one where a message level reject is applicable.<br> <br><a href=\"https://docs.clickatell.com/channels/one-api/one-api-errors-table/\"\
+        >Errors Table</a><br><a href=\"https://docs.clickatell.com/channels/one-api/one-api-message-status-table/\"\
+        >Message Status Table</a><br><a href=\"https://docs.clickatell.com/channels/one-api/supported-content-types/\"\
+        >Supported content types and limitations</a>"
+      operationId: sendMessageREST
+      parameters: []
+      requestBody:
+        description: Send message/messages request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendOmniChannelMessagesRequest'
+            examples:
+              Example 1:
+                summary: "SMS: One message"
+                description: Example 1
+                value:
+                  messages:
+                  - channel: sms
+                    to: "2799900001"
+                    content: Here is my message
+              Example 2:
+                summary: "SMS: One two-way message"
+                description: Example 2
+                value:
+                  messages:
+                  - channel: sms
+                    from: "2799900001"
+                    to: "2799900002"
+                    content: Here is my two-way message
+              Example 3:
+                summary: "SMS: One message with aes-256-gcm encryption"
+                description: Example 3
+                value:
+                  messages:
+                  - channel: sms
+                    to: "2799900001"
+                    content: gv2pYQ5T0MjTax5cz6tIzgZg1gxZ6QQ7BfczEKNc=
+                    encryptionCipher: aes-256-gcm
+                    encryptionKeyArn: arn:aws:kms:us-east-1:55555555:key/11111-1111-111-1111-1111111
+                    encryptionKey: AQIDAHh6Ji8OpMJqM/F8MyoTOwK1KkI1z9rI+LY7bNLFksXmbwnOgftmgoodQ==
+              Example 4:
+                summary: "SMS: Two unique message texts sent to two handsets"
+                description: Example 4
+                value:
+                  messages:
+                  - channel: sms
+                    to: "2799900001"
+                    content: Here is my message
+                  - channel: sms
+                    to: "2799900002"
+                    content: Here is my second message
+              Example 5:
+                summary: "WhatsApp Text: One message"
+                description: Example 5
+                value:
+                  messages:
+                  - channel: whatsapp
+                    to: "2799900001"
+                    content: Here is my message
+              Example 6:
+                summary: "WhatsApp: Inline Media: One message"
+                description: Example 6
+                value:
+                  messages:
+                  - channel: whatsapp
+                    to: "2799900001"
+                    content: /9j/4AAQSkZJRgABAQEASABIAAD/2w...SDayT2Nha/OIUS3FhlyHzB8ic6ctekf/9k=
+                    media:
+                      contentType: image/png
+                      caption: First Image File
+              Example 7:
+                summary: "WhatsApp: By Reference Media: One message (With Caption)"
+                description: Example 7
+                value:
+                  messages:
+                  - channel: whatsapp
+                    to: "2799900001"
+                    media:
+                      fileId: UUID.xxx
+                      caption: First Image File
+              Example 8:
+                summary: "WhatsApp: By Reference Media: One message (Without Caption)"
+                description: Example 8
+                value:
+                  messages:
+                  - channel: whatsapp
+                    to: "2799900001"
+                    media:
+                      fileId: UUID.xxx
+                      caption: null
+              Example 9:
+                summary: "WhatsApp Contacts: One message"
+                description: Example 9
+                value:
+                  messages:
+                  - channel: whatsapp
+                    to: "2799900001"
+                    contacts:
+                    - addresses:
+                      - city: Menlo Park
+                        country: United States
+                        countryCode: us
+                        state: CA
+                        street: 1 Hacker Way
+                        type: HOME
+                        zip: "94025"
+                      - city: Menlo Park
+                        country: United States
+                        countryCode: us
+                        state: CA
+                        street: 200 Jefferson Dr
+                        type: WORK
+                        zip: "94025"
+                      birthday: 2012-08-18
+                      emails:
+                      - email: test@fb.com
+                        type: WORK
+                      - email: test@whatsapp.com
+                        type: WORK
+                      name:
+                        firstName: John
+                        formattedName: John Smith
+                        lastName: Smith
+                      org:
+                        company: WhatsApp
+                        department: Design
+                        title: Manager
+                      phones:
+                      - phone: +1 (940) 555-1234
+                        type: HOME
+                      - phone: +1 (650) 555-1234
+                        type: WORK
+                        waId: "16505551234"
+                      urls:
+                      - url: https://www.facebook.com
+                        type: WORK
+                    - addresses:
+                      - city: Menlo Park
+                        country: United States
+                        countryCode: us
+                        state: CA
+                        street: 1 Hacker Way
+                        type: HOME
+                        zip: "94025"
+                      name:
+                        firstName: John
+                        formattedName: John Do
+                        lastName: Do
+              Example 10:
+                summary: "WhatsApp Location: One message"
+                description: Example 10
+                value:
+                  messages:
+                  - channel: whatsapp
+                    to: "2799900001"
+                    location:
+                      longitude: "18.635891216806"
+                      latitude: "-33.881037287485"
+                      name: Clickatell
+                      address: "100 Edward Street, Bellville, Bellville, Western Cape\
+                        \ 7530"
+              Example 11:
+                summary: "WhatsApp Text Template: One message"
+                description: Example 11
+                value:
+                  messages:
+                  - to: "2799900001"
+                    channel: whatsapp
+                    template:
+                      templateName: welcome_notification_demo
+                      body:
+                        parameters:
+                          "1": Parameter 1
+                          "2": Parameter 2
+              Example 12:
+                summary: WhatsApp Interactive Text Template with Dynamic URL
+                description: Example 12
+                value:
+                  messages:
+                  - to: "2799900001"
+                    channel: whatsapp
+                    template:
+                      templateName: your_template_name_here
+                      body:
+                        parameters:
+                          "1": Parameter 1
+                          "2": Parameter 2
+                          "3": Parameter 3
+                      buttons:
+                        websiteUrl:
+                        - listPosition: 1
+                          parameters:
+                            "1": contact/contact-sales/
+              Example 13:
+                summary: "WhatsApp Media Template: One message"
+                description: Example 13
+                value:
+                  messages:
+                  - to: "2799900001"
+                    channel: whatsapp
+                    template:
+                      templateName: your_template_name
+                      header:
+                        type: media
+                        media:
+                          fileId: uuid.xxx
+                      body:
+                        parameters:
+                          "1": Parameter 1
+                          "2": Parameter 2
+              Example 14:
+                summary: "WhatsApp Interactive Media Template with Dynamic URL Button\
+                  \ And Dial Button: One message"
+                description: Example 14
+                value:
+                  messages:
+                  - to: "2799900001"
+                    channel: whatsapp
+                    template:
+                      templateName: your_template_name
+                      header:
+                        type: media
+                        media:
+                          fileId: uuid.xxx
+                      body:
+                        parameters:
+                          "1": Parameter 1
+                          "2": Parameter 2
+                      buttons:
+                        websiteUrl:
+                        - listPosition: 2
+                          parameters:
+                            "1": welcome.html
+              Example 15:
+                summary: "WhatsApp Interactive Media Template with Suggested Response\
+                  \ Buttons: One message"
+                description: Example 15
+                value:
+                  messages:
+                  - to: "2799900001"
+                    channel: whatsapp
+                    template:
+                      templateName: your_template_name
+                      header:
+                        type: media
+                        media:
+                          fileId: uuid.xxx
+                      body:
+                        parameters:
+                          "1": Parameter 1
+                          "2": Parameter 2
+                      buttons:
+                        suggestedResponse:
+                          postbackData:
+                            "1": "{\"buttonPressed\":\"welcome_button1\"}"
+                            "2": "{\"buttonPressed\":\"welcome_button2\"}"
+                            "3": "{\"buttonPressed\":\"welcome_button3\"}"
+              Example 16:
+                summary: "WhatsApp Interactive ListPicker: One message"
+                description: Example 16
+                value:
+                  messages:
+                  - to: "2799900001"
+                    channel: whatsapp
+                    listPicker:
+                      subtitle: Fast food 24/7
+                      title: Unbeatable prices
+                      footer: A footer message can appear here
+                      button: Open Menu
+                      sections:
+                      - title: Specials menu
+                        items:
+                        - subtitle: "90g beef, onions, mayo"
+                          title: Cheese Burger & chips
+                          postbackData: specials-item1
+                        - subtitle: Deep fried
+                          title: Fish & chips
+                          postbackData: specials-item2
+                      - title: Pizzas
+                        items:
+                        - title: Hawaiian
+                          subtitle: Ham and pineapple
+                          postbackData: pizza-item1
+                        - title: Sweet & Sour Chicken
+                          subtitle: "Tomato, garlic, mushrooms"
+                          postbackData: pizza-item2
+              Example 17:
+                summary: "WhatsApp Interactive Button: One message"
+                description: Example 17
+                value:
+                  messages:
+                  - to: "2799900001"
+                    channel: whatsapp
+                    button:
+                      body: Body text here
+                      items:
+                      - title: First Buttons Title
+                        postbackData: postback-id-1
+                      - title: Second Buttons Title
+                        postbackData: postback-id-2
+              Example 18:
+                summary: "WhatsApp Interactive Button: By Reference Media: One message"
+                description: Example 18
+                value:
+                  messages:
+                  - to: "2799900001"
+                    channel: whatsapp
+                    button:
+                      header:
+                        type: media
+                        media:
+                          type: image
+                          fileId: UUID.xxx
+                      body: Body text here
+                      items:
+                      - title: First Buttons Title
+                        postbackData: postback-id-1
+                      - title: Second Buttons Title
+                        postbackData: postback-id-2
+              Example 19:
+                summary: WhatsApp and SMS message in one request
+                description: "Message to first handset is an SMS, message to second\
+                  \ handset is a WhatsApp message"
+                value:
+                  messages:
+                  - channel: sms
+                    to: "2799900001"
+                    content: Here is my SMS message
+                  - channel: whatsapp
+                    to: "2799900002"
+                    content: Here is my WhatsApp message
+      responses:
+        "202":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmniMessageListResponse'
+              examples:
+                Example 1:
+                  summary: Response one message
+                  description: Example 1
+                  value:
+                    messages:
+                    - apiMessageId: 77fb29998253415fa5d66971d519d362
+                      accepted: true
+                      to: "2799900001"
+                      error: null
+                    error: null
+                Example 2:
+                  summary: Response two messages
+                  description: Example 2
+                  value:
+                    messages:
+                    - apiMessageId: 02ca87d5a95446e68b0ac36a0c2057f1
+                      accepted: true
+                      to: "2799900001"
+                    - apiMessageId: b71d513be46f4b29b16c2f354c7eef07
+                      accepted: true
+                      to: "2799900002"
+                    error: null
+        "207":
+          description: "Returned on a message when more than one message was submitted,\
+            \ but they have a different status (example: one message was accepted,\
+            \ and one was rejected"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmniMessageListResponse'
+              example:
+                messages:
+                - apiMessageId: cd2d90701afe42cdb15e2670218d8567
+                  accepted: true
+                  to: "2799900001"
+                - error:
+                    code: 23
+                    description: "Invalid or missing parameter: to ."
+                  accepted: false
+                  to: 27999abcde
+                error: null
+        "400":
+          description: Bad Request. Note that the global error object is not used
+            because this is a message-level error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmniMessageListResponse'
+              example:
+                messages:
+                - apiMessageId: null
+                  accepted: false
+                  to: 27999abcde
+                  error:
+                    code: 23
+                    description: "Invalid or missing parameter: to"
+                error: null
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                error:
+                  code: 1
+                  description: Invalid or missing integration API Key
+        "402":
+          description: Payment Required. User is out of funds/credits/currency/balance
+        "404":
+          description: Request was sent to a resource that does not exist
+        "503":
+          description: Service Unavailable
+      security:
+      - api-key: []
+  /v1/notification:
+    post:
+      tags:
+      - One API
+      summary: Send Business Read status notification
+      operationId: sendBusinessStatusNotification
+      parameters: []
+      requestBody:
+        description: Send business status notification/notifications request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReplyStatusNotificationRequest'
+            examples:
+              Example 1:
+                summary: "WhatsApp: One business read notification"
+                description: Example 1
+                value:
+                  event:
+                    messageStatusUpdate:
+                    - channel: whatsapp
+                      statusCode: 1001
+                      messageId: 3a89680503414383af44dcd0e4e5f184
+                      clientEventId: 2993b6b548000a80989a20549e7558a5
+              Example 2:
+                summary: "WhatsApp: Two Business read notifications"
+                description: Example 2
+                value:
+                  event:
+                    messageStatusUpdate:
+                    - channel: whatsapp
+                      statusCode: 1001
+                      messageId: 3a89680503414383af44dcd0e4e5f184
+                      clientEventId: 2993b6b548000a80989a20549e7558a5
+                    - channel: whatsapp
+                      statusCode: 1001
+                      messageId: 218966011341438aaf44dcd0e4ess455
+                      clientEventId: 2993b6b548000a8098fffff2929292922
+      responses:
+        "202":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WhatsAppNotificationListResponse'
+              examples:
+                Example 1:
+                  summary: Response one notification
+                  description: Example 1
+                  value:
+                    event:
+                      messageStatusUpdate:
+                      - apiEventId: 77fb29998253415fa5d66971d519d362
+                        accepted: true
+                        messageId: 3a89680503414383af44dcd0e4e5f184
+                        clientEventId: 2993b6b548000a80989a20549e7558a5
+                        error: null
+                    error: null
+                Example 2:
+                  summary: Response two notifications
+                  description: Example 2
+                  value:
+                    event:
+                      messageStatusUpdate:
+                      - apiEventId: 77fb29998253415fa5d66971d519d362
+                        accepted: true
+                        messageId: 3a89680503414383af44dcd0e4e5f184
+                        clientEventId: 2993b6b548000a80989a20549e7558a5
+                        error: null
+                      - apiEventId: 66fb2825341dffddfdf66971d519d361
+                        accepted: true
+                        messageId: 218966011341438aaf44dcd0e4ess455
+                        clientEventId: 2993b6b548000a8098fffff2929292922
+                        error: null
+                    error: null
+        "207":
+          description: "Returned on a request when more than one notification was\
+            \ submitted, but they have a different status (example: one notification\
+            \ was accepted, and one was rejected"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WhatsAppNotificationListResponse'
+              example:
+                event:
+                  messageStatusUpdate:
+                  - apiEventId: 77fb29998253415fa5d66971d519d362
+                    accepted: true
+                    messageId: 3a89680503414383af44dcd0e4e5f184
+                    clientEventId: 2993b6b548000a80989a20549e7558a5
+                    error: null
+                  - apiEventId: null
+                    accepted: false
+                    messageId: 218966011341438aaf44dcd0e4ess455
+                    clientEventId: 2993b6b548000a8098fffff2929292922
+                    error:
+                      code: 23
+                      description: "Invalid or missing parameter: messageId ."
+                error: null
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WhatsAppNotificationListResponse'
+              example:
+                event:
+                  messageStatusUpdate:
+                  - apiEventId: null
+                    accepted: false
+                    messageId: 3a89680503414383af44dcd0e4e5f184
+                    clientEventId: 2993b6b548000a80989a20549e7558a5
+                    error:
+                      code: 23
+                      description: "Invalid or missing parameter: messageId ."
+                error: null
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                error:
+                  code: 1
+                  description: Invalid or missing integration API Key
+        "404":
+          description: Request was sent to a resource that does not exist
+        "503":
+          description: Service Unavailable
+      security:
+      - api-key: []
+  /v1/media/{fileId}:
+    get:
+      tags:
+      - One API
+      summary: Get media file metadata
+      description: Response returns metadata of uploaded media
+      operationId: getMetadata
+      parameters:
+      - name: fileId
+        in: path
+        description: ID of the file that was returned in media upload request
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaFileMetadataResponse'
+              example:
+                expirationTime: 1583845974
+                broadcastAllowed: true
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmniMediaUploadResponse'
+              example:
+                fileId: null
+                accepted: false
+                error:
+                  code: 39
+                  description: Channel is not available on integration.
+        "404":
+          description: Account/file not found
+      security:
+      - api-key: []
+  /v1/media:
+    get:
+      tags:
+      - One API
+      summary: Media Download
+      description: <ul><li>Media file will be available for download for 30 days</li><li>The
+        response body will contain:<ul> <li>the binary media data if it is not client
+        side encrypted</li> <li>the encrypted binary media data if client side encrypted</li></ul></li><li>The
+        download URL is specified in the moMedia event in the downloadUrl parameter
+        of the files object array</li></ul>
+      operationId: downloadFile
+      parameters:
+      - name: fileId
+        in: query
+        description: ID of the file that is presented in MO Callbacks
+        required: true
+        schema:
+          type: string
+      - name: source
+        in: query
+        description: "If encryption is client, value should be 'client'"
+        schema:
+          type: string
+          enum:
+          - client
+      - name: sha256Hash
+        in: query
+        description: Hash of file that is presented in MO Callbacks
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+              example: TUYASDBJHWETTASDGJ
+        "400":
+          description: Bad request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OmniMediaUploadResponse'
+              example:
+                fileId: null
+                accepted: false
+                error:
+                  code: 33
+                  description: Media item not found
+        "404":
+          description: Account/file not found
+      security:
+      - api-key: []
+    post:
+      tags:
+      - One API
+      summary: Upload media file for One Api
+      description: <ul><li>Uploaded media file will be available for message sending
+        for 30 days after uploading</li><li>The body must contain the binary media
+        data</li><li>Media size limit is 30MB</li> </ul> <br> <br><a href="https://docs.clickatell.com/channels/one-api/supported-content-types/">Supported
+        content types and limitations</a>
+      operationId: uploadFile
+      parameters:
+      - name: to
+        in: query
+        description: 'Field that marks this upload file for delivery to a single destination
+          user. Limits message sending to only this number '
+        schema:
+          type: string
+      - name: broadcastAllowed
+        in: query
+        description: Field that marks this upload file for delivery to any destination
+          users. Value must be set to true <br><b>Media template and interactive media
+          templates are not allowed to be broadcast</b>
+        schema:
+          type: boolean
+      - name: fileName
+        in: query
+        description: File name of the file being uploaded
+        required: true
+        schema:
+          type: string
+      - name: encryptionKey
+        in: query
+        schema:
+          type: string
+      - name: kmsArn
+        in: query
+        schema:
+          type: string
+      - name: encryptionCipher
+        in: query
+        schema:
+          type: string
+      - name: sha256FileHash
+        in: query
+        schema:
+          type: string
+      - name: Content-Type
+        in: header
+        description: Content type of file
+        required: true
+        schema:
+          type: string
+        example: image/jpg
+      requestBody:
+        description: Send message/messages request
+        content:
+          '*/*':
+            schema:
+              type: object
+            examples:
+              Example 1:
+                summary: "Media upload CURL example: single destination user"
+                description: Example 1
+                value: "curl -X POST -H \"Authorization: YOUR-API-KEY\" -H 'Content-Type:\
+                  \ image/jpg' --data-binary @myFilename.jpg https://platform.clickatell.com/v1/media?fileName=myFilename.jpg&to=27999123456"
+              Example 2:
+                summary: "Media upload CURL example: any destination user"
+                description: Example 2
+                value: "curl -X POST -H \"Authorization: YOUR-API-KEY\" -H 'Content-Type:\
+                  \ image/jpg' --data-binary @myFilename.jpg https://platform.clickatell.com/v1/media?fileName=myFilename.jpg&broadcastAllowed=true"
+              Example 3:
+                summary: "Media upload CURL example: Client side encryption: single\
+                  \ destination user"
+                description: Example 3
+                value: "curl -X POST -H \"Authorization: YOUR-API-KEY\" -H 'Content-Type:\
+                  \ image/jpg' --data-binary @myFilename.jpg https://platform.clickatell.com/v1/media?fileName=myFilename.jpg&to=27999123456&encryptionKey=AQIDAHjKscWmAdVBYCAuwrmHqdFcfc1qQTwN4M5Vb1tzSbSzlAFWaDiEp7buQVDEj8QQ47DTAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQML9HZ3ZETp8UEQ7f5AgEQgDsuxBawqMG8JE%2FY0GLIKbzZbyeVC1N7v7%2BwTRaMGjuwxNVLMSyBUVkik4GTAIr%2FaJaV%2Bke63nX8XgDrlg%3D%3D&kmsArn=arn%3Aaws%3Akms%3Aeu-west-1%3A3408......26%3Akey%2F4981f4b4-ddc5-45f3-96d5-2123456789cf&sha256FileHash=dc47e0cd628a17a0da9059f6e368160507cebb1274607fadb1f575483899d73c"
+              Example 4:
+                summary: "Media upload CURL example: Client side encryption: any destination\
+                  \ user"
+                description: Example 4
+                value: "curl -X POST -H \"Authorization: YOUR-API-KEY\" -H 'Content-Type:\
+                  \ image/jpg' --data-binary @myFilename.jpg https://platform.clickatell.com/v1/media?fileName=myFilename.jpg&broadcastAllowed=true&encryptionKey=AQIDAHjKscWmAdVBYCAuwrmHqdFcfc1qQTwN4M5Vb1tzSbSzlAFWaDiEp7buQVDEj8QQ47DTAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQML9HZ3ZETp8UEQ7f5AgEQgDsuxBawqMG8JE%2FY0GLIKbzZbyeVC1N7v7%2BwTRaMGjuwxNVLMSyBUVkik4GTAIr%2FaJaV%2Bke63nX8XgDrlg%3D%3D&kmsArn=arn%3Aaws%3Akms%3Aeu-west-1%3A3408......26%3Akey%2F4981f4b4-ddc5-45f3-96d5-2123456789cf&sha256FileHash=dc47e0cd628a17a0da9059f6e368160507cebb1274607fadb1f575483899d73c"
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmniMediaUploadResponse'
+              example:
+                fileId: uuid.xxx
+                accepted: true
+                error: null
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OmniMediaUploadResponse'
+              example:
+                fileId: null
+                accepted: false
+                error:
+                  code: 30
+                  description: Content type not supported
+        "404":
+          description: Account not found
+      security:
+      - api-key: []
+  /v1/balance:
+    get:
+      tags:
+      - One API
+      summary: Return information about account balance
+      operationId: accountMessagingBalance
+      parameters: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagingBalanceResponse'
+              example:
+                balance: 1267.92865
+                currency: ZAR
+        "404":
+          description: Account not found
+      security:
+      - api-key: []
+components:
+  schemas:
+    FallbackStatus:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - sms
+          - whatsapp
+        timestamp:
+          type: integer
+          format: int64
+        statusDescription:
+          type: integer
+          format: int32
+        status:
+          type: string
+        messageId:
+          type: string
+        clientMessageId:
+          type: string
+    MessageStatus:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - sms
+          - whatsapp
+        timestamp:
+          type: integer
+          format: int64
+        statusCode:
+          type: integer
+          format: int32
+        status:
+          type: string
+        messageId:
+          type: string
+        clientMessageId:
+          type: string
+    OmniStatusCallbackRequest:
+      type: object
+      properties:
+        integrationId:
+          type: string
+        integrationName:
+          type: string
+        event:
+          $ref: '#/components/schemas/StatusEvents'
+    StatusEvents:
+      type: object
+      properties:
+        messageStatusUpdate:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageStatus'
+        messageFallback:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/FallbackStatus'
+        statusIsTyping:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/TypingStatus'
+    TypingStatus:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - sms
+          - whatsapp
+        timestamp:
+          type: integer
+          format: int64
+        from:
+          type: string
+    ButtonResponseReply:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel which is used with the specified message
+          enum:
+          - sms
+          - whatsapp
+        messageId:
+          type: string
+          description: Id of a message that originated from client
+        relatedMessageId:
+          type: string
+          description: Id of a message to which client responds
+        relatedClientMessageId:
+          type: string
+          description: Id which was specified in <i>clientMessageId</i> field
+        from:
+          type: string
+          description: Sender phone number
+        to:
+          type: string
+          description: Receiver phone number
+        timestamp:
+          type: integer
+          description: Unix timestamp when the system received the message in milliseconds
+          format: int64
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded CipherTextBlob
+            which must be used to generate the plain text decryption key for decryption
+            of the content parameter
+        whatsapp:
+          $ref: '#/components/schemas/WhatsAppContent'
+        postbackData:
+          type: string
+        selectedItem:
+          $ref: '#/components/schemas/SelectedButtonItem'
+    ContactsReply:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel which is used with the specified message
+          enum:
+          - sms
+          - whatsapp
+        messageId:
+          type: string
+          description: Id of a message that originated from client
+        relatedMessageId:
+          type: string
+          description: Id of a message to which client responds
+        relatedClientMessageId:
+          type: string
+          description: Id which was specified in <i>clientMessageId</i> field
+        from:
+          type: string
+          description: Sender phone number
+        to:
+          type: string
+          description: Receiver phone number
+        timestamp:
+          type: integer
+          description: Unix timestamp when the system received the message in milliseconds
+          format: int64
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded CipherTextBlob
+            which must be used to generate the plain text decryption key for decryption
+            of the content parameter
+        whatsapp:
+          $ref: '#/components/schemas/WhatsAppContent'
+        contacts:
+          $ref: '#/components/schemas/WhatsAppContact'
+        charset:
+          type: string
+    InlineMediaReply:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel which is used with the specified message
+          enum:
+          - sms
+          - whatsapp
+        messageId:
+          type: string
+          description: Id of a message that originated from client
+        relatedMessageId:
+          type: string
+          description: Id of a message to which client responds
+        relatedClientMessageId:
+          type: string
+          description: Id which was specified in <i>clientMessageId</i> field
+        from:
+          type: string
+          description: Sender phone number
+        to:
+          type: string
+          description: Receiver phone number
+        timestamp:
+          type: integer
+          description: Unix timestamp when the system received the message in milliseconds
+          format: int64
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded CipherTextBlob
+            which must be used to generate the plain text decryption key for decryption
+            of the content parameter
+        whatsapp:
+          $ref: '#/components/schemas/WhatsAppContent'
+        caption:
+          type: string
+        content:
+          type: string
+        sha256Hash:
+          type: string
+        contentType:
+          type: string
+    ListPickerResponseReply:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel which is used with the specified message
+          enum:
+          - sms
+          - whatsapp
+        messageId:
+          type: string
+          description: Id of a message that originated from client
+        relatedMessageId:
+          type: string
+          description: Id of a message to which client responds
+        relatedClientMessageId:
+          type: string
+          description: Id which was specified in <i>clientMessageId</i> field
+        from:
+          type: string
+          description: Sender phone number
+        to:
+          type: string
+          description: Receiver phone number
+        timestamp:
+          type: integer
+          description: Unix timestamp when the system received the message in milliseconds
+          format: int64
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded CipherTextBlob
+            which must be used to generate the plain text decryption key for decryption
+            of the content parameter
+        whatsapp:
+          $ref: '#/components/schemas/WhatsAppContent'
+        postbackData:
+          type: string
+        selectedItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/SelectedButtonItem'
+    LocationReply:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel which is used with the specified message
+          enum:
+          - sms
+          - whatsapp
+        messageId:
+          type: string
+          description: Id of a message that originated from client
+        relatedMessageId:
+          type: string
+          description: Id of a message to which client responds
+        relatedClientMessageId:
+          type: string
+          description: Id which was specified in <i>clientMessageId</i> field
+        from:
+          type: string
+          description: Sender phone number
+        to:
+          type: string
+          description: Receiver phone number
+        timestamp:
+          type: integer
+          description: Unix timestamp when the system received the message in milliseconds
+          format: int64
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded CipherTextBlob
+            which must be used to generate the plain text decryption key for decryption
+            of the content parameter
+        whatsapp:
+          $ref: '#/components/schemas/WhatsAppContent'
+        charset:
+          type: string
+          description: Character encoding
+          default: UTF-8
+        locationAddress:
+          type: string
+          description: Address of the location
+        locationName:
+          type: string
+          description: Name of the location
+        latitude:
+          type: string
+          description: Numeric latitude value expressed as a string
+        latitute:
+          type: string
+          description: Numeric latitude value expressed as a string
+        longitude:
+          type: string
+          description: Numeric longitude value expressed as a string
+    MediaReply:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel which is used with the specified message
+          enum:
+          - sms
+          - whatsapp
+        messageId:
+          type: string
+          description: Id of a message that originated from client
+        relatedMessageId:
+          type: string
+          description: Id of a message to which client responds
+        relatedClientMessageId:
+          type: string
+          description: Id which was specified in <i>clientMessageId</i> field
+        from:
+          type: string
+          description: Sender phone number
+        to:
+          type: string
+          description: Receiver phone number
+        timestamp:
+          type: integer
+          description: Unix timestamp when the system received the message in milliseconds
+          format: int64
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded CipherTextBlob
+            which must be used to generate the plain text decryption key for decryption
+            of the content parameter
+        whatsapp:
+          $ref: '#/components/schemas/WhatsAppContent'
+        caption:
+          type: string
+      anyOf:
+      - $ref: '#/components/schemas/InlineMediaReply'
+      - $ref: '#/components/schemas/ReferenceMediaReply'
+    OmniReplyCallbackRequest:
+      type: object
+      properties:
+        integrationId:
+          type: string
+        integrationName:
+          type: string
+        event:
+          $ref: '#/components/schemas/ReplyEvents'
+    ReferenceMediaFile:
+      required:
+      - byteSize
+      - contentType
+      - downloadUrl
+      type: object
+      properties:
+        contentType:
+          type: string
+          description: Media content type for the media item
+        downloadUrl:
+          type: string
+          description: Download URL to be used for downloading the media item
+        sha256Hash:
+          type: string
+        byteSize:
+          type: integer
+          description: Byte size of the file to be downloaded
+          format: int64
+        fileName:
+          type: string
+          description: Original file name (if it is available)
+    ReferenceMediaReply:
+      required:
+      - files
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel which is used with the specified message
+          enum:
+          - sms
+          - whatsapp
+        messageId:
+          type: string
+          description: Id of a message that originated from client
+        relatedMessageId:
+          type: string
+          description: Id of a message to which client responds
+        relatedClientMessageId:
+          type: string
+          description: Id which was specified in <i>clientMessageId</i> field
+        from:
+          type: string
+          description: Sender phone number
+        to:
+          type: string
+          description: Receiver phone number
+        timestamp:
+          type: integer
+          description: Unix timestamp when the system received the message in milliseconds
+          format: int64
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded CipherTextBlob
+            which must be used to generate the plain text decryption key for decryption
+            of the content parameter
+        whatsapp:
+          $ref: '#/components/schemas/WhatsAppContent'
+        caption:
+          type: string
+        files:
+          type: array
+          description: 'An array of the file object with a list of media items that
+            is attached to the inbound media message. This parameter is only applicable
+            to MO event callbacks for media by reference '
+          items:
+            $ref: '#/components/schemas/ReferenceMediaFile'
+    ReferralInfo:
+      type: object
+      properties:
+        headline:
+          type: string
+          description: Headline used in the ad that generated the message.
+        content:
+          type: string
+          description: Body from the ad that generated the message.
+        sourceType:
+          type: string
+          description: The type of the ad’s source.
+          enum:
+                - ad
+                - post
+        sourceId:
+          type: string
+          description: Facebook ID for an ad or a post.
+        sourceUrl:
+          type: string
+          description:
+                        The url that leads to the ad or post. Opening this url takes
+                        you to the ad viewed by your user.
+    ReplyEvents:
+      type: object
+      properties:
+        moText:
+          type: array
+          items:
+            $ref: '#/components/schemas/TextReply'
+        moMedia:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaReply'
+        moLocation:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationReply'
+        moContacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactsReply'
+        moSuggestedResponse:
+          type: array
+          items:
+            $ref: '#/components/schemas/SuggestedResponseReply'
+        moListPickerResponse:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListPickerResponseReply'
+        moButtonResponse:
+          type: array
+          items:
+            $ref: '#/components/schemas/ButtonResponseReply'
+    SelectedButtonItem:
+      type: object
+      properties:
+        postbackData:
+          type: string
+        content:
+          type: string
+    Sms:
+      type: object
+      properties:
+        udh:
+          type: string
+        network:
+          type: integer
+          format: int32
+    SuggestedResponseReply:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel which is used with the specified message
+          enum:
+          - sms
+          - whatsapp
+        messageId:
+          type: string
+          description: Id of a message that originated from client
+        relatedMessageId:
+          type: string
+          description: Id of a message to which client responds
+        relatedClientMessageId:
+          type: string
+          description: Id which was specified in <i>clientMessageId</i> field
+        from:
+          type: string
+          description: Sender phone number
+        to:
+          type: string
+          description: Receiver phone number
+        timestamp:
+          type: integer
+          description: Unix timestamp when the system received the message in milliseconds
+          format: int64
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded CipherTextBlob
+            which must be used to generate the plain text decryption key for decryption
+            of the content parameter
+        whatsapp:
+          $ref: '#/components/schemas/WhatsAppContent'
+        charset:
+          type: string
+        postbackData:
+          type: string
+        content:
+          type: string
+    TextReply:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel which is used with the specified message
+          enum:
+          - sms
+          - whatsapp
+        messageId:
+          type: string
+          description: Id of a message that originated from client
+        relatedMessageId:
+          type: string
+          description: Id of a message to which client responds
+        relatedClientMessageId:
+          type: string
+          description: Id which was specified in <i>clientMessageId</i> field
+        from:
+          type: string
+          description: Sender phone number
+        to:
+          type: string
+          description: Receiver phone number
+        timestamp:
+          type: integer
+          description: Unix timestamp when the system received the message in milliseconds
+          format: int64
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded CipherTextBlob
+            which must be used to generate the plain text decryption key for decryption
+            of the content parameter
+        whatsapp:
+          $ref: '#/components/schemas/WhatsAppContent'
+        charset:
+          type: string
+        content:
+          type: string
+        sms:
+          $ref: '#/components/schemas/Sms'
+    WhatsAppContact:
+      required:
+      - name
+      type: object
+      properties:
+        addresses:
+          minItems: 1
+          type: array
+          description: "List of address object. See request example WhatsApp Contacts:\
+            \ One message"
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        birthday:
+          pattern: YYYY-MM-DD
+          type: string
+          description: String date value.
+        emails:
+          minItems: 1
+          type: array
+          description: "List of the email object. See request example WhatsApp Contacts:\
+            \ One message"
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        name:
+          type: object
+          additionalProperties:
+            type: string
+            description: "Name object. See request example WhatsApp Contacts: One\
+              \ message"
+          description: "Name object. See request example WhatsApp Contacts: One message"
+        org:
+          type: object
+          additionalProperties:
+            type: string
+            description: "See request example WhatsApp Contacts: One message"
+          description: "See request example WhatsApp Contacts: One message"
+        phones:
+          minItems: 1
+          type: array
+          description: "List of the phone object. See request example WhatsApp Contacts:\
+            \ One message"
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        urls:
+          minItems: 1
+          type: array
+          description: "List of the url object. See request example WhatsApp Contacts:\
+            \ One message"
+          items:
+            type: object
+            additionalProperties:
+              type: string
+    WhatsAppContent:
+      type: object
+      properties:
+        profileName:
+          type: string
+          description: Users profile name as set up on their WA Client
+        referralInfo:
+          $ref: '#/components/schemas/ReferralInfo'
+      description: WhatsApp specific content
+    OmniMessageStatusEntry:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - UNKNOWN
+          - QUEUED
+          - SCHEDULED
+          - SENT_TO_SUPPLIER
+          - DEVICE_ACK
+          - READ
+          - EXPIRED
+          - STOPPED_BY_USER
+          - STOPPED_BY_ADMIN
+          - DELIVERY_FAILURE
+          - EMULATED
+          - INSUFFICIENT_ACCOUNT_BALANCE
+          - VOLUME_LIMIT
+          - VOLUME_LIMIT_DAILY
+          - VOLUME_LIMIT_MONTHLY
+          - RECIPIENT_DOES_NOT_EXIST
+          - ENCRYPTION_ACCESS_DENIED
+          - ENCRYPTION_CONTENT_ERROR
+          - MEDIA_NOT_FOUND
+          - MEDIA_SIZE_ERROR
+          - MEDIA_CHECKSUM_FAILURE
+          - MEDIA_REJECTED_BY_SUPPLIER
+          - MEDIA_METADATA_ERROR
+          - ROUTING_ERROR
+          - WHATSAPP_ACCOUNT_PAYMENT_ISSUE
+          - WHATSAPP_RE_ENGAGEMENT_REQUIRED
+          - WHATSAPP_SPAM_RATE_LIMIT_REACHED
+          - WHATSAPP_SERVER_RATE_LIMIT
+          - WHATSAPP_HSM_NOT_AVAILABLE
+          - WHATSAPP_HSM_PARAM_COUNT_MISMATCH
+          - WHATSAPP_HSM_IS_MISSING
+          - WHATSAPP_HSM_DOWNLOAD_FAILED
+          - WHATSAPP_HSM_PACK_IS_MISSING
+          - WHATSAPP_EXPERIMENTAL_NUMBER
+          - WHATSAPP_TEMPLATE_TEXT_TOO_LONG
+          - WHATSAPP_TEMPLATE_FORMAT_MISMATCH
+          - WHATSAPP_TEMPLATE_FORMATTING_POLICY_VIOLATED
+          - WHATSAPP_TEMPLATE_MEDIA_FORMAT_UNSUPPORTED
+          - WHATSAPP_PARAMETER_MISSING
+          - WHATSAPP_PARAMETER_INVALID
+          - WHATSAPP_PARAMETER_NOT_REQUIRED
+          - WHATSAPP_TEMPLATE_INVALID_URL
+          - WHATSAPP_TEMPLATE_INVALID_PHONE_NUMBER
+          - WHATSAPP_TEMPLATE_RECEIVER_NO_BUTTON_SUPPORT
+        timestamp:
+          type: integer
+          format: int64
+    OmniMessageStatusResponse:
+      type: object
+      properties:
+        sms:
+          $ref: '#/components/schemas/OmniMessageStatusEntry'
+        whatsapp:
+          $ref: '#/components/schemas/OmniMessageStatusEntry'
+    OmniMessageListResponse:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/OmniMessagesResponse'
+        error:
+          $ref: '#/components/schemas/OmniResponseError'
+        type:
+          type: string
+          writeOnly: true
+          enum:
+          - SUCCESS
+          - MIXED
+          - FAIL
+    OmniMessagesResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/OmniResponseError'
+        apiMessageId:
+          type: string
+          description: System defined message ID.
+          externalDocs:
+            description: FAQ
+            url: https://docs.clickatell.com/technical-faq/one_api/which-parameter-in-the-callback-payload-will-match-to-the-apimessageid-in-the-send-message-response/
+        accepted:
+          type: boolean
+          description: Indication if the message has passed API validation
+        to:
+          type: string
+          description: Recipient of the message.
+        clientMessageId:
+          type: string
+          description: Customer defined message ID for tracking purposes.
+          externalDocs:
+            description: FAQ
+            url: https://docs.clickatell.com/technical-faq/one_api/which-parameter-in-the-callback-payload-will-match-to-the-apimessageid-in-the-send-message-response/
+    OmniResponseError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: '<i>Error Code</i> value in '
+          format: int32
+          externalDocs:
+            description: Errors Table
+            url: https://docs.clickatell.com/channels/one-api/one-api-errors-table/
+        description:
+          type: string
+          description: <i>Error Message</i>
+    HSM:
+      required:
+      - parameters
+      - template
+      type: object
+      properties:
+        template:
+          type: string
+          description: Unique reference Id of the pre approved message template to
+            be used when sending a message.
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+            description: Values to apply to the variables within the requested message
+              template ("variableNumber":"variableValue")
+            example: "\"1\" : \"Param1\", \"2\" : \"Param2\""
+          description: Values to apply to the variables within the requested message
+            template ("variableNumber":"variableValue")
+          example: "\"1\" : \"Param1\", \"2\" : \"Param2\""
+      description: <b>WhatsApp only</b><br>Object containing parameters for sending
+        an HSM message.<br>You cannot use the HSM template creation process to send
+        WhatsApp Pre-Approved Templates.<br><b>Will be deprecated</b><br><u>Use <i>template</i>
+        instead</u>
+    Location:
+      required:
+      - latitude
+      - longitude
+      type: object
+      properties:
+        longitude:
+          maximum: 180
+          minimum: -180
+          type: string
+          description: Longitude of the location as a numeric string value.
+        latitude:
+          maximum: 90
+          minimum: -90
+          type: string
+          description: Longitude of the location as a numeric string value.
+        name:
+          type: string
+          description: Name of the location.
+        address:
+          type: string
+          description: Address of the location. The address will only be displayed
+            if the name was set.
+      description: <b>WhatsApp only</b><br>Object containing parameters for sending
+        a location message.
+    OmniIntegrationWaMediaRequest:
+      type: object
+      properties:
+        contentType:
+          type: string
+          description: Media type header for file format and file content. This parameter
+            is required when sending a media message.<br><b>Inline required.</b>
+        caption:
+          type: string
+          description: This is an optional parameter and may be used to describe the
+            media file being sent. Do not use when sending audio media.
+        fileName:
+          type: string
+          description: This is an optional parameter and may be used to specify name
+            of a file that is sent to WhatsApp.
+        sha256Hash:
+          type: string
+          description: SHA256 File hash of the unencrypted file content.
+        fileId:
+          type: string
+          description: File reference id as returned in the media file upload API
+            call.<br><b>By Reference required.</b>
+      description: <b>WhatsApp only</b><br>Object containing parameters for sending
+        a media message.
+    OmniMessageRequest:
+      required:
+      - to
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Specifies the channel to be used with the specified message.
+          enum:
+          - sms
+          - whatsapp
+        to:
+          type: string
+          description: Recipient of the message. For whatsapp and sms channels this
+            is their MSISDN.
+        content:
+          minLength: 1
+          type: string
+          description: "The string value contains actual message content. <br><b>Character\
+            \ set UTF-8</b><br>WhatsApp Inline Media: base64 encoded media data<br><b>Not\
+            \ required for media by reference message sending</b><br><br><b>Limit</b><ul><li>WhatsApp\
+            \ text: 4096 characters</li><li>WhatsApp media: 1MB (total 20MB payload\
+            \ limit)</li></ul>"
+        clientMessageId:
+          type: string
+          description: Customer defined message ID for tracking purposes. Returned
+            in callbacks and certain API submission formats.
+          externalDocs:
+            description: FAQ
+            url: https://docs.clickatell.com/technical-faq/one_api/which-parameter-in-the-callback-payload-will-match-to-the-apimessageid-in-the-send-message-response/
+        scheduledDeliveryTime:
+          pattern: yyyy-MM-ddTHH:mm:ssXXX
+          type: string
+          description: Ability to schedule messages for later delivery.
+          example: 2022-02-24T04:00:00+0200
+        validityPeriod:
+          type: integer
+          description: The message will not be processed/queued/retried for a period
+            exceeding the provided validity period. (In minutes)
+          format: int32
+          default: 1440
+        previewFirstUrl:
+          type: boolean
+          description: <b>WhatsApp only</b><br>True or false - will indicate if URL
+            link must display as preview on recipient phone. Only applicable when
+            sending plain text messages.
+        location:
+          $ref: '#/components/schemas/Location'
+        contacts:
+          type: array
+          description: "<b>WhatsApp only</b><br>Array of the contact object containing\
+            \ parameters for sending a contacts message.<br><b>Note:</b><br> if contact\
+            \ object is presented, minimum requirement is the name parameter + at\
+            \ least one other parameter."
+          items:
+            $ref: '#/components/schemas/WhatsAppContact'
+        media:
+          $ref: '#/components/schemas/OmniIntegrationWaMediaRequest'
+        template:
+          $ref: '#/components/schemas/WhatsAppMessageTemplate'
+        listPicker:
+          $ref: '#/components/schemas/WhatsAppMessageList'
+        button:
+          $ref: '#/components/schemas/WhatsAppMessageButton'
+        hsm:
+          $ref: '#/components/schemas/HSM'
+        from:
+          type: string
+          description: <b>Sms only</b><br>The two-way number that will be used for
+            message delivery<br>from - Required Field for Two Way communication in
+            the USA.
+        userDataHeader:
+          type: string
+          description: "<b>Sms only</b><br>UDH content of a message. It does not contain\
+            \ any text, but rather specifies how the message should be processed.\
+            \ Basically, it’s a part of the SMS which tells the receiving handset\
+            \ what type of message being sent."
+        binary:
+          type: boolean
+          description: <b>Sms only</b><br>Specifies if <i>content</i> delivered by
+            client needs to be in binary format.
+        encryptionKey:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Base64 encoded encrypted
+            data key as generated from AWS KMS. Note that MC2 will have to submit
+            additional fields to SMS/WA adapter for client side encryption to work.
+            For client side encrypted media by reference send message requests this
+            field must be populated even if the media <i>caption</i> is null.
+        encryptionKeyArn:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Customer defined encryption
+            key ARN.
+        encryptionCipher:
+          type: string
+          description: <b>Client side encryption ONLY</b><br>Customer defined encryption
+            cipher.
+    SendOmniChannelMessagesRequest:
+      required:
+      - messages
+      type: object
+      properties:
+        messages:
+          maxItems: 100
+          minItems: 1
+          type: array
+          description: An array of one or more messages can be specified
+          items:
+            $ref: '#/components/schemas/OmniMessageRequest'
+      description: One api send message request
+    WhatsAppMessageButton:
+      required:
+      - body
+      - items
+      type: object
+      properties:
+        body:
+          maximum: 1024
+          type: string
+        header:
+          $ref: '#/components/schemas/WhatsAppMessageButtonHeader'
+        items:
+          maxItems: 3
+          minItems: 1
+          type: array
+          description: Array of button item objects containing specific fields for
+            sending a button message.
+          items:
+            $ref: '#/components/schemas/WhatsAppMessageButtonItem'
+        footer:
+          maximum: 60
+          type: string
+      description: <b>WhatsApp only</b><br>Object containing parameter for sending
+        a button message
+    WhatsAppMessageButtonHeader:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: Indicates if the header is of type text or media
+          enum:
+          - text
+          - media
+        text:
+          maximum: 60
+          type: string
+          description: "Required, if type text<br><b>Note:</b> Does not allow markdown"
+        media:
+          $ref: '#/components/schemas/WhatsAppMessageButtonMedia'
+      description: Header content displayed on top of a message
+    WhatsAppMessageButtonItem:
+      required:
+      - postbackData
+      - title
+      type: object
+      properties:
+        postbackData:
+          maximum: 256
+          type: string
+          description: Used to identify the item(s) that have been selected.<br><b>Note:</b>
+            The value must be unique across all reply buttons in the message.
+        title:
+          maximum: 20
+          type: string
+          description: Title of item group.<br><b>Note:</b> Does not allow markdown
+        type:
+          type: string
+          description: This is a reserved field for the case where other option types
+            get added. An example for GBM is a 'open url' action.
+          enum:
+          - reply
+    WhatsAppMessageButtonMedia:
+      type: object
+      properties:
+        type:
+          type: string
+          description: File type value.
+          enum:
+          - image
+          - video
+          - document
+        fileId:
+          type: string
+          description: File reference id as returned in the media file upload API
+            call.
+      description: "Required, if type media"
+    WhatsAppMessageList:
+      required:
+      - button
+      - sections
+      - subtitle
+      type: object
+      properties:
+        sections:
+          maxItems: 10
+          minItems: 1
+          type: array
+          description: Array of the message objects containing items for sending a
+            list message.
+          items:
+            $ref: '#/components/schemas/WhatsAppMessageListSection'
+        title:
+          maximum: 60
+          type: string
+          description: Title for the list picker message.<br><b>Note:</b> Does not
+            allow markdown
+        subtitle:
+          maximum: 1024
+          type: string
+          description: Subtitle for the list picker message
+        button:
+          maximum: 20
+          type: string
+          description: Button name for the list picker message.<br><b>Note:</b> Does
+            not allow markdown
+        footer:
+          maximum: 60
+          type: string
+      description: <b>WhatsApp only</b><br>Object containing parameter for sending
+        a list message
+    WhatsAppMessageListSection:
+      type: object
+      properties:
+        items:
+          maxItems: 10
+          minItems: 1
+          type: array
+          description: Array of the section message object containing specific title
+            fields for sending a list message. Max items in total is 10.
+          items:
+            $ref: '#/components/schemas/WhatsAppMessageListSectionItem'
+        title:
+          maximum: 24
+          type: string
+          description: "Title of section<br><b>Note:</b> Does not allow markdown.<br>If\
+            \ more than one section is presented, this field is required."
+    WhatsAppMessageListSectionItem:
+      required:
+      - postbackData
+      - title
+      type: object
+      properties:
+        title:
+          maximum: 24
+          type: string
+          description: Title of item<br><b>Note:</b> Does not allow markdown
+        subtitle:
+          maximum: 72
+          type: string
+          description: Subtitle of item<br><b>Note:</b> Does not allow markdown
+        postbackData:
+          maximum: 200
+          type: string
+          description: Used to identify the item(s) that have been selected.<br><b>Note:</b>
+            Does not support emojis or markdown as it is not a visible field.
+    WhatsAppMessageTemplate:
+      required:
+      - body
+      - templateName
+      type: object
+      properties:
+        templateName:
+          type: string
+          description: Template name which was specified when created.
+        language:
+          type: string
+          description: Specifies the language the template may be rendered in.
+        header:
+          $ref: '#/components/schemas/WhatsAppMessageTemplateHeader'
+        body:
+          $ref: '#/components/schemas/WhatsAppMessageTemplateBody'
+        buttons:
+          $ref: '#/components/schemas/WhatsAppMessageTemplateButtons'
+      description: <b>WhatsApp only</b><br>Object containing parameters for sending
+        a template message.
+    WhatsAppMessageTemplateBody:
+      required:
+      - parameters
+      type: object
+      properties:
+        parameters:
+          minLength: 1
+          type: object
+          additionalProperties:
+            minLength: 1
+            type: string
+            description: 'Key value pairs; key is string numeric value parameter and
+              value set to the parameter valueMinimum allowed number of parameters
+              in the template body is one '
+          description: 'Key value pairs; key is string numeric value parameter and
+            value set to the parameter valueMinimum allowed number of parameters in
+            the template body is one '
+      description: Body object.
+    WhatsAppMessageTemplateButtons:
+      type: object
+      properties:
+        suggestedResponse:
+          $ref: '#/components/schemas/WhatsAppTemplateSuggestedResponse'
+        websiteUrl:
+          type: array
+          items:
+            $ref: '#/components/schemas/WhatsAppTemplateWebsiteUrl'
+      description: Interactive template message buttons.<br> WhatsApp supports 1 button
+        type per send message request.
+    WhatsAppMessageTemplateHeader:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: Indicates if the header is of type text or media
+          enum:
+          - text
+          - media
+        text:
+          $ref: '#/components/schemas/WhatsAppTemplateHeaderText'
+        media:
+          $ref: '#/components/schemas/WhatsAppTemplateHeaderMedia'
+      description: Template header.
+    WhatsAppTemplateHeaderMedia:
+      required:
+      - fileId
+      type: object
+      properties:
+        fileId:
+          type: string
+          description: "<i>fileId</i> as received when uploading the media file. <br><b>WhatsApp\
+            \ allows image, video and document. Template media is not allowed to be\
+            \ broadcast (a single uploaded media file sent to multiple destination\
+            \ users)</b>"
+      description: "Required, if type media"
+    WhatsAppTemplateHeaderText:
+      type: object
+      properties:
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+            description: Key value pairs; key is string numeric value parameter and
+              value set to the parameter value WhatsApp currently only allows for
+              a single parameter value in the header text. <br><b>Only required if
+              the template was created with a variable in the header text</b>
+          description: Key value pairs; key is string numeric value parameter and
+            value set to the parameter value WhatsApp currently only allows for a
+            single parameter value in the header text. <br><b>Only required if the
+            template was created with a variable in the header text</b>
+      description: "Required, if type text"
+    WhatsAppTemplateSuggestedResponse:
+      required:
+      - postbackData
+      type: object
+      properties:
+        postbackData:
+          maximum: 3
+          maxProperties: 3
+          type: object
+          additionalProperties:
+            maximum: 3
+            maxProperties: 3
+            type: string
+            description: "<b>Key</b> : String integer value of the button to which\
+              \ the postbackData should be associated<br><b>Value</b> : User defined\
+              \ data that will be returned in the callback function to the business."
+          description: "<b>Key</b> : String integer value of the button to which the\
+            \ postbackData should be associated<br><b>Value</b> : User defined data\
+            \ that will be returned in the callback function to the business."
+    WhatsAppTemplateWebsiteUrl:
+      required:
+      - listPosition
+      type: object
+      properties:
+        listPosition:
+          type: integer
+          description: If a template was create with a dial button in the 1st position
+            and the websiteUrl in the 2nd position then the <i>listPosition</i> will
+            be 2.<br>If a template was created with the websiteUrl button in 1st position
+            and the dial button in the 2nd position will be 1.
+          format: int32
+          enum:
+          - 1
+          - 2
+        parameters:
+          maxProperties: 1
+          type: object
+          additionalProperties:
+            maxProperties: 1
+            type: string
+            description: ' WhatsApp supports parameter value in a dynamic URL.'
+          description: ' WhatsApp supports parameter value in a dynamic URL.'
+    MediaFileMetadataResponse:
+      type: object
+      properties:
+        expirationTime:
+          type: integer
+          format: int64
+        broadcastAllowed:
+          type: boolean
+    OmniMediaUploadResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/OmniResponseError'
+        fileId:
+          type: string
+        accepted:
+          type: boolean
+    MessagingBalanceResponse:
+      type: object
+      properties:
+        balance:
+          type: number
+        currency:
+          type: string
+    NotificationEventResponse:
+      type: object
+      properties:
+        messageStatusUpdate:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationResponse'
+    NotificationResponse:
+      type: object
+      properties:
+        apiEventId:
+          type: string
+        accepted:
+          type: boolean
+        messageId:
+          type: string
+        clientEventId:
+          type: string
+        error:
+          $ref: '#/components/schemas/OmniResponseError'
+    WhatsAppNotificationListResponse:
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/NotificationEventResponse'
+        error:
+          $ref: '#/components/schemas/OmniResponseError'
+        type:
+          type: string
+          writeOnly: true
+          enum:
+          - SUCCESS
+          - MIXED
+          - FAIL
+    ReplyStatusEvent:
+      required:
+      - messageStatusUpdate
+      type: object
+      properties:
+        messageStatusUpdate:
+          maxItems: 100
+          minItems: 1
+          type: array
+          description: An array of one or more messages can be specified
+          items:
+            $ref: '#/components/schemas/ReplyStatusUpdateNotification'
+      description: Business Read Status event request
+    ReplyStatusNotificationRequest:
+      required:
+      - event
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/ReplyStatusEvent'
+      description: Send Business Read Status notification request
+    ReplyStatusUpdateNotification:
+      required:
+      - messageId
+      - statusCode
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Supplier channel on which the inbound message to which this
+            notification relates was received
+          default: whatsapp
+          enum:
+          - whatsapp
+        statusCode:
+          type: integer
+          description: Business acknowledges that it has read (seen) an inbound message
+            from the user
+          format: int32
+          default: 1001
+          enum:
+          - 1001
+        messageId:
+          type: string
+          description: MO message id of the message associated with this status update
+        clientEventId:
+          type: string
+          description: Client internal id that the client can use to match the response
+            to the request. This parameter will just be echoed back in the response.
+  securitySchemes:
+    api-key:
+      type: apiKey
+      name: Authorization
+      in: header

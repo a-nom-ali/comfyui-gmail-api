@@ -89,7 +89,7 @@ class SendMail:
         if not gmail.authorize_with_token(token_path):
             raise Exception("Failed to authenticate with token")
 
-        message = gmail.send_message(body, subject, to_email, from_email, attachments, thread_id, extra_pnginfo)
+        message = gmail.send_message(body, subject, to_email, from_email, attachments, message_id, thread_id, extra_pnginfo)
 
         return (
             message_id if message is not None else None,

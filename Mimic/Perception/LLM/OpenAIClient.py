@@ -64,7 +64,7 @@ class OpenAIClient:
         return i
 
     @staticmethod
-    def complete(key: str, model: str, temperature: float, top_p: float, system_content: str, messages: [], max_tokens: int = 512):
+    def complete(key: str, model: str, temperature: float, top_p: float, system_content: str, messages: [], functions: [], max_tokens: int = 512):
         errors = validation(temperature, top_p)
         if errors:
             error_report = "\n".join([e for e in errors])
@@ -77,6 +77,7 @@ class OpenAIClient:
             max_tokens=max_tokens,
             messages=[
                 {"role": "system", "content": system_content},
-            ] + messages
+            ] + messages,
+            functions=functions
         )
         return response

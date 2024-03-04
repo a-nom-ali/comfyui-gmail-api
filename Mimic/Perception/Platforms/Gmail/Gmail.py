@@ -1,6 +1,9 @@
+import email
 import os.path
 import re
 from datetime import datetime
+from email import errors
+
 import dateutil.parser as parser
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -166,8 +169,21 @@ class Gmail:
 
         return results.get('messages')
 
+    def get_mime_message(self, user_id, msg_id):
+        try:
+            message = self.service.users().messages().get(userId=user_id, id=msg_id,
+                                                     format='raw').execute()
+
+            msg_str = base64.urlsafe_b64decode(message['raw']).decode()
+
+            mime_msg = email.message_from_string(msg_str)
+
+            return mime_msg
+        except errors.HttpError as error:
+            print('An error occurred: %s' % error)
+
     def send_message(self, message_body: str, subject: str, to_email: str, from_email: str, attachments: list = None,
-                     thread_id: str = None, extra_pnginfo=None):
+                     message_id: str = None, thread_id: str = None, extra_pnginfo=None):
         """Create and send an email message
         Print the returned  message id
         Returns: Message object, including message id    """
@@ -224,6 +240,12 @@ class Gmail:
                 thread_subject = self.get_thread_subject(thread)
                 message['Subject'] = thread_subject if thread_subject is not None else subject
                 create_message["threadId"] = thread_id
+                # message['Reference'] = message_id
+                # message['In-Reply-To'] = message_id
+                ms = self.get_mime_message("me", message_id)
+                msg_id = format(ms['Message-ID'])
+                message.add_header('Reference', msg_id)
+                message.add_header('In-Reply-To', msg_id)
             else:
                 message['Subject'] = subject  # "{}{}".format("" if not thread_id else "Re ", subject)
 

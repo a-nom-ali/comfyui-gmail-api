@@ -20,7 +20,7 @@ DEFAULT_SETTINGS = {
 
 
 def load_settings():
-    path = os.path.join(os.path.join(os.path.dirname(__file__), ".."), "settings.yaml")
+    path = os.path.join(os.path.join(os.path.dirname(__file__), "../.."), "settings.yaml")
     file_path = pathlib.Path(path)
     if not file_path.exists():
         return DEFAULT_SETTINGS['perception']
@@ -31,6 +31,6 @@ def load_settings():
     return the_yaml['perception']
 
 
-def api_settings(section: str = "openai"):
-    openai_settings = load_settings()['openai_compatible'][section]
-    return openai_settings['api_base'], openai_settings['api_key'], openai_settings['organisation']
+def api_settings(section: str = "openai", group: str = 'openai_compatible'):
+    settings = load_settings()[group][section]
+    return settings['api_base'], settings['api_key'], settings['organisation']

@@ -5,7 +5,8 @@ from .Gmail import Gmail
 
 class ThreadToOpenAIMessages():
     RETURN_TYPES = (
-        "OPENAI_CHAT_MESSAGES", )
+        "OPENAI_CHAT_MESSAGES",
+    )
 
     RETURN_NAMES = (
         "messages",
