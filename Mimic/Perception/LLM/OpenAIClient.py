@@ -4,7 +4,7 @@ import PIL.Image
 from openai import OpenAI
 
 from ..Settings import api_settings
-
+import pretty_errors
 DALL_E_SIZE: TypeAlias = Literal["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"]
 
 
@@ -78,6 +78,6 @@ class OpenAIClient:
             messages=[
                 {"role": "system", "content": system_content},
             ] + messages,
-            functions=functions
+            functions=functions,
         )
         return response

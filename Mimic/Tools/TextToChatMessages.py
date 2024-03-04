@@ -1,4 +1,6 @@
 import json
+import yaml
+import pretty_errors
 
 
 class TextToChatMessages:
@@ -47,6 +49,7 @@ class TextToChatMessages:
             self,
             text: str):
         # try:
-        return (json.loads(text).replace("\\\\", ''),)
+        text = text.replace("\\", '')
+        return (yaml.safe_load(text),)
         # except json.decoder.JSONDecodeError as e:
         #     return {"ui": {"result":f"FUCK. Invalid JSON: {e}"}}

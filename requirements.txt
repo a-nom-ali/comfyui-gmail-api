@@ -1,5 +1,6 @@
 whatsapp-python
 python-telegram-bot
 numpy==1.26.2
+openai==1.13.3
 clickatell-platform
 endpoints

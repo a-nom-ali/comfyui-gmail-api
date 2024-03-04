@@ -1,0 +1,17 @@
+mimic:
+  openai_compatible:
+    openai:
+      api_base: 'https://api.openai.com/v1'
+      organisation: ""
+      api_key: ""
+      model: "gpt-4"
+    default:
+      api_base: "http://10.0.0.199:1234/v1"
+      organisation: "NONE"
+      api_key: "NONE"
+      model: "Llama-2-13b-chat"
+  search:
+    serper:
+      api_base: 'https://google.serper.dev/search'
+      organisation: ""
+      api_key: ""

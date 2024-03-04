@@ -1,5 +1,7 @@
 from .OpenAIClient import OpenAIClient
 from ..Settings import load_settings
+import json
+import pretty_errors
 
 
 class OpenAICompatibleConversation:
@@ -44,7 +46,7 @@ class OpenAICompatibleConversation:
     )
     RETURN_NAMES = (
         "RESPONSE",
-        "JSON",
+        "FUNCTION",
     )
     FUNCTION = "node"
     CATEGORY = "🤖💬 Perception/🦜 LLM"
@@ -76,4 +78,11 @@ class OpenAICompatibleConversation:
             max_tokens=max_tokens,
         )
 
-        return (f'{response.choices[0].message.content}', json.dumps(response.choices), )
+        choice = response.choices[0]
+        content = choice.message.content
+        function_call = {
+            "name": choice.message.function_call.name,
+            "arguments": json.loads(choice.message.function_call.arguments)
+        } if choice.finish_reason == "function_call" else None
+
+        return (f'{content}', json.dumps(function_call), )

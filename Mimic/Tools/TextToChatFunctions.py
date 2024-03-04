@@ -1,4 +1,6 @@
 import json
+import yaml
+import pretty_errors
 
 
 class TextToChatFunctions:
@@ -46,8 +48,9 @@ class TextToChatFunctions:
     def node(
             self,
             text: str):
-        try:
-            functions = json.loads(text.replace("/n", ""))
-            return (functions if functions and len(functions) > 0 else None,)
-        except json.decoder.JSONDecodeError as e:
-            return {"ui": {"result":f"FUCK. Invalid JSON: {e}"}}
+        # try:
+        text = text.replace("\\", '')
+        functions = yaml.safe_load(text.replace("/n", ""))
+        return (functions if functions and len(functions) > 0 else None,)
+        # except json.decoder.JSONDecodeError as e:
+        #     return {"ui": {"result":f"FUCK. Invalid JSON: {e}"}}

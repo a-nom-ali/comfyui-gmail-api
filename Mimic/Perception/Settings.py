@@ -4,7 +4,7 @@ import pathlib
 import yaml
 
 DEFAULT_SETTINGS = {
-    "perception": {
+    "mimic": {
         "openai": {
             "organisation": "NO ORG",
             "api_key": "NO API KEY",
@@ -23,12 +23,12 @@ def load_settings():
     path = os.path.join(os.path.join(os.path.dirname(__file__), "../.."), "settings.yaml")
     file_path = pathlib.Path(path)
     if not file_path.exists():
-        return DEFAULT_SETTINGS['perception']
+        return DEFAULT_SETTINGS['mimic']
 
     with open(path) as settings:
         the_yaml = yaml.safe_load(settings)
 
-    return the_yaml['perception']
+    return the_yaml['mimic']
 
 
 def api_settings(section: str = "openai", group: str = 'openai_compatible'):
